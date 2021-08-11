@@ -1,0 +1,6 @@
+---
+- hosts: aws_ecs
+  tasks:
+    - import_role:
+        name: gagglenet.ecs_anywhere.ecs_anywhere
+  become: yes

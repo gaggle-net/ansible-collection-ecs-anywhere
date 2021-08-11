@@ -1,0 +1,12 @@
+---
+- hosts: aws_ecs
+  become: true
+  tasks:
+    - include_role:
+        name: ecs_anywhere
+        tasks_from: deregister-ssm-instance
+    
+    - include_role:
+        name: ecs_anywhere
+        tasks_from: register-ssm-instance
+    

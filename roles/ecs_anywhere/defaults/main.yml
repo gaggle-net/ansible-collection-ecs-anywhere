@@ -1,0 +1,6 @@
+---
+aws_region: us-west-2
+aws_dir: /opt/amazon/ecs-anywhere
+aws_ecs_cluster: default
+aws_s3_bucket: amazon-ecs-agent-packages-preview
+...

@@ -1,0 +1,15 @@
+---
+- name: ECS Anywhere | Check if ECS Cluster Exists
+  local_action: ansible.builtin.command /usr/bin/aws ecs describe-clusters --clusters "{{ aws_ecs_cluster }}" --profile "{{ aws_profile }}"
+  register:  cluster_info
+  become: false
+
+- set_fact: 
+    cluster_exists: true
+  when: (( cluster_info.stdout | from_json ).clusters | length) > 0
+
+- name: ECS Anywhere | Fail if Cluster Not Found
+  fail:
+    msg: ECS cluster '{{ aws_ecs_cluster }}' not found. Check spelling and try again.
+  when: cluster_exists is undefined
+

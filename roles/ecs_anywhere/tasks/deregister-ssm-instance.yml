@@ -1,0 +1,63 @@
+---
+- name: ECS Anywhere | Get SSM Instance Info
+  shell: ssm-cli get-instance-information
+  register: ssm_instance_info
+
+- set_fact:
+    ssm_id: "{{ (ssm_instance_info.stdout | from_json) | json_query('\"instance-id\"') }}"
+
+- name: ECS Anywhere | Check SSM Registration Status
+  local_action:
+    module: shell /usr/bin/aws ssm describe-instance-information --filters "Key=InstanceIds,Values={{ ssm_id }}" --profile "{{ aws_profile}}"
+  register: ssm_registration_info
+  become: false
+
+- set_fact:
+    ssm_registration: "{{ (ssm_registration_info.stdout | from_json).InstanceInformationList }}"
+
+- set_fact:
+    ssm_registered: true
+  when: ( ssm_registration | length ) != 0
+
+- name: ECS Anywhere | Deregister SSM Node
+  local_action:
+    module: shell /usr/bin/aws ssm deregister-managed-instance --instance-id "{{ ssm_id }}" --profile "{{ aws_profile }}"
+  become: false
+  when: ssm_registered is defined
+
+- name: ECS Anywhere | Delete Local Registration Info
+  file:
+    path: /var/lib/amazon/ssm/registration
+    state: absent
+
+- name: ECS Anywhere | Delete ECS Agent Data
+  file:
+    path: /var/lib/ecs/data/agent.db
+    state: absent 
+
+- name: ECS Anywhere | Stop the SSM Agent Service
+  systemd: 
+    name: amazon-ssm-agent.service
+    state: stopped
+
+- name: ECS Anywhere | Stope the ECS Agent Service
+  systemd:
+    name: ecs.service
+    state: stopped
+
+- name: ECS Anywhere | Install python3-docker 
+  yum:
+    name: python3-docker
+    state: installed
+
+- name: ECS Anywhere | Get List of All Running Docker Containers
+  docker_host_info:
+    containers: true
+  register: docker_info
+
+- name: ECS Anywhere | Remove All Docker Containers 
+  docker_container:
+    name: '{{ item.Names[0] | regex_replace("^/", "") }}'
+    state: absent
+  loop: "{{ docker_info.containers }}"
+...
