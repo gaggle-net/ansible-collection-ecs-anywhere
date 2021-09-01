@@ -6,24 +6,11 @@
 - set_fact:
     ssm_id: "{{ (ssm_instance_info.stdout | from_json) | json_query('\"instance-id\"') }}"
 
-- name: ECS Anywhere | Check SSM Registration Status
+- name: ECS Anywhere | Deregister SSM Instance
   local_action:
-    module: shell /usr/bin/aws ssm describe-instance-information --filters "Key=InstanceIds,Values={{ ssm_id }}" --profile "{{ aws_profile}}"
-  register: ssm_registration_info
-  become: false
-
-- set_fact:
-    ssm_registration: "{{ (ssm_registration_info.stdout | from_json).InstanceInformationList }}"
-
-- set_fact:
-    ssm_registered: true
-  when: ( ssm_registration | length ) != 0
-
-- name: ECS Anywhere | Deregister SSM Node
-  local_action:
-    module: shell /usr/bin/aws ssm deregister-managed-instance --instance-id "{{ ssm_id }}" --profile "{{ aws_profile }}"
-  become: false
-  when: ssm_registered is defined
+    module: gagglenet.ecs_anywhere.aws_ssm_instance
+    state: deregister
+    instance_id: ssm_id
 
 - name: ECS Anywhere | Delete Local Registration Info
   file:
