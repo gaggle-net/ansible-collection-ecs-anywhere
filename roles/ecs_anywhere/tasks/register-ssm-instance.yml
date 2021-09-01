@@ -15,14 +15,13 @@
     state: absent
 
 - name: ECS Anywhere | Create SSM Activation Code
-  local_action: ansible.builtin.command /usr/bin/aws ssm create-activation --iam-role {{ aws_ssm_role }} --registration-limit {{ ansible_play_hosts | length }} --profile {{ aws_profile }}
+  local_action:
+    module: gagglenet.ecs_anywhere.aws_ssm_activation
   register: ssm_activation_info
-  run_once: true
-  become: false
 
 - set_fact:
-    ssm_activation_id: "{{ (ssm_activation_info.stdout | from_json) | json_query('\"ActivationId\"') }}"
-    ssm_activation_code: "{{ (ssm_activation_info.stdout | from_json) | json_query('\"ActivationCode\"') }}"
+    ssm_activation_id: "{{ (ssm_activation_info.ActivationId }}"
+    ssm_activation_code: "{{ (ssm_activation_info.ActivationCode }}"
 
 - name: ECS Anywhere | Set the ECS Cluster Name
   lineinfile:
