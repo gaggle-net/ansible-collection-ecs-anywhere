@@ -54,14 +54,41 @@ author:
 '''
 
 EXAMPLES = '''
-- name: Create SSM Activation
-  aws_ssm_activation:
-    iam_role: ecsAnywhereRole
-
+- hosts: localhost
+  tasks:
+  - name: Create SSM Activation
+    aws_ssm_activation:
+      state: create
+      iam_role: ecsAnywhereRole
+      region: us-west-2
+    
+- hosts: localhost
+  tasks:
+  - name: Delete SSM Activation
+    aws_ssm_activation:
+      state: delete
+      activation_id: 12345678
+    
+- hosts: localhost
+  tasks:
+  - name: Get SSM Activation
+    aws_ssm_activation:
+      state: get
 '''
 
 RETURN = '''
-# TODO
+ActivationId:
+  description: SSM Activation Id
+  type: string
+  returned: state is create
+ActivationCode: 
+  description: SSM Activation Code
+  type: string
+  returned: state is create
+ActivationList:
+  description: List of SSM Activations
+  type: list
+  returned: state is get
 '''
 
 try:
@@ -95,7 +122,7 @@ def delete_ssm_activation(module, client, activation_id):
             ActivationId=activation_id
         )
     except is_boto3_error_code('InvalidActivation') as e:
-        module.fail_json_aws(e, msg="Could not find activation.")
+        module.warn("Could not find activation.")
     except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError) as e:
         module.fail_json_aws(e, msg=e)
     module.exit_json(msg="SSM Activation Deleted", changed=True)
@@ -114,8 +141,8 @@ def get_ssm_activation(module, client, activation_id):
             )
         else:
             ssm_output = client.describe_activations()
-    except is_boto3_error_code('InvalidActivation') as e:
-        module.fail_json_aws(e, msg="Could not find activation.")
+    except is_boto3_error_code('InvalidInstanceId') as e:
+        module.warn("Could not find activation.")
     except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError) as e:
         module.fail_json_aws(e, msg=e)
     module.exit_json(msg="SSM Activation List", output=ssm_output['ActivationList'])
