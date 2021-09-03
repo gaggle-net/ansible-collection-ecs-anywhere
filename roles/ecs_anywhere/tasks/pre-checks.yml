@@ -1,16 +1,4 @@
 ---
-- name: ECS Anywhere | Check Authentication to AWS
-  local_action: ansible.builtin.command /usr/bin/aws sts get-caller-identity --profile {{ aws_profile }}
-  register: aws_auth
-  ignore_errors: yes
-  run_once: true
-
-- name: ECS Anywhere | Stop on Login Failure
-  fail:
-    msg: Failed to authenticate to AWS. Check credentials and try again.
-  when: aws_auth != 0
-  run_once: true
-
 - name: ECS Anywhere | Check If Using cgroups V2
   stat:
     path: /sys/fs/cgroup/cgroup.controllers
