@@ -4,3 +4,8 @@
     - import_role:
         name: gagglenet.ecs_anywhere.ecs_anywhere
   become: yes
+  vars:
+    aws_region: us-west-2
+    aws_ecs_cluster: ecs-anywhere
+    iam_role: ecsAnywhereRole
+ 
