@@ -5,7 +5,7 @@ galaxy_info:
   descpription: Ansible role that configures ecs anywhere instance
   company: Gaggle Net
   issue_tracker_url: https://github.com/gaggle-net/ansible-ecs-anywhere-playbook/issues
-  license: Apache-2.0
+  license: MIT
   min_ansible_version: 2.4.0
   github_branch: main
   platforms:
