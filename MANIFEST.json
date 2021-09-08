@@ -11,7 +11,7 @@
    "aws", "ecs", "centos"
   ],
   "description": "ECS Anywhere Collection",
-  "license": [MIT],
+  "license_file": "LICENSE",
   "dependencies": {},
   "repository": "https://github.com/gaggle-net/ansible-collection-ecs-anywhere",
   "documentation": null,
