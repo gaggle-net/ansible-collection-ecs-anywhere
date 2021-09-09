@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "gagglenet",
   "name": "ecs_anywhere",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "authors": [
    "Sergio Mejia <sergio@gaggle.net>"
   ],
@@ -11,7 +11,6 @@
    "aws", "ecs", "centos"
   ],
   "description": "ECS Anywhere Collection",
-  "license": [],
   "license_file": "LICENSE",
   "dependencies": {},
   "repository": "https://github.com/gaggle-net/ansible-collection-ecs-anywhere",

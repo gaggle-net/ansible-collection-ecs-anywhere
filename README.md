@@ -26,19 +26,25 @@ Install ECS and SSM agents and register SSM node
 ---
 - hosts: aws_ecs
   tasks:
-    - import_role:
-        name: gagglenet.ecs_anywhere.ecs_anywhere
-  become: yes
+  - name: Run AWS Install Script
+    include_role:
+      name: gagglenet.ecs_anywhere.ecs_anywhere
+      tasks_from: aws-script-install
+    vars:
+      iam_role: ecsAnywhereRole
+      aws_ecs_cluster: ecs-anywhere
+      region: us-west-2
+
 ```
 
 ## Running the Playbook
 ```bash
-ansible-playbook ecs-anywhere.yml -i hosts --extra_vars "aws_profile=int-con ssm_role=ecsAnywhereRole ecs_cluster=ecsAnywhere-test aws_region=us-west-2"
+ansible-playbook ecs-anywhere.yml -i hosts 
 ```
 
 ## License
 
-Apache 2.0
+MIT
 
 ## Author Information
 [gaggle-net](https://github.com/gaggle-net)
