@@ -11,8 +11,6 @@ Supports the following Operating Systems:
 
 -   CentOS 7
 -   CentOS 8
--   Fedora 27 
--   Fedora 28
 
 ## Requirements
 
