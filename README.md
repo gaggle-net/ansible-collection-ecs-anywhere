@@ -16,7 +16,18 @@ Supports the following Operating Systems:
 
 ## Requirements
 
-This role requires Ansible 2.4 or higher and AWS CLI v2. 
+This role requires Ansible 2.4 or higher and AWS CLI v2.
+
+## Variables
+
+| variable | description | required? | default |
+| -------- | ----------- | ---------- | ------- | 
+| iam_role | Which IAM role to associate with instance | yes | - |
+| aws_ecs_cluster | Name of ECS cluster to use | yes | - |
+| aws_region | Which region to use for this ECS instance | yes | `us-west-2` |
+| aws_install_dir | Where to install ECS anywhere | no | `/opt/amazon/ecs-anywhere` |
+| aws_script_url | Location of install script | no | `https://amazon-ecs-agent.s3.amazonaws.com/ecs-anywhere-install-latest.sh` |
+
 
 ## Example Playbooks
 
