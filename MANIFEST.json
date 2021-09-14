@@ -1,0 +1,22 @@
+{
+ "collection_info": {
+  "namespace": "gagglenet",
+  "name": "ecs_anywhere",
+  "version": "1.0.0",
+  "authors": [
+   "Sergio Mejia <sergio@gaggle.net>"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "aws", "ecs", "centos"
+  ],
+  "description": "ECS Anywhere Collection",
+  "license_file": "LICENSE",
+  "dependencies": {},
+  "repository": "https://github.com/gaggle-net/ansible-collection-ecs-anywhere",
+  "documentation": null,
+  "homepage": "https://github.com/gaggle-net/ansible-collection-ecs-anywhere",
+  "issues": "https://github.com/gaggle-net/ansible-collection-ecs-anywhere/issues"
+ },
+ "format": 1
+}

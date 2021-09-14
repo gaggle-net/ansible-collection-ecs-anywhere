@@ -1,0 +1,50 @@
+---
+- name: ECS Anywhere | Stop the ECS Service
+  systemd:
+    name: ecs.service
+    state: stopped
+  become: yes
+
+- name: ECS Anywhere | Delete ECS Agent Data
+  file:
+    path: /var/lib/ecs/data/agent.db
+    state: absent
+  become: yes
+
+- name: ECS Anywhere | Create SSM Activation Code
+  local_action:
+    module: gagglenet.ecs_anywhere.aws_ssm_activation
+    state: create
+    iam_role: "{{ iam_role }}"
+    region: "{{ aws_region }}"
+  register: ssm_activation_info
+
+- set_fact:
+    ssm_activation_id: "{{ ssm_activation_info.ActivationId }}"
+    ssm_activation_code: "{{ ssm_activation_info.ActivationCode }}"
+
+- name: ECS Anywhere | Set the ECS Cluster Name
+  lineinfile:
+    state: present
+    path: /etc/ecs/ecs.config
+    regexp: '^[# ]*ECS_CLUSTER\s*=\s*'
+    line: "ECS_CLUSTER={{ aws_ecs_cluster }}"
+  become: yes
+ 
+- name: ECS Anywhere | Register the SSM Agent
+  shell:
+    "/usr/bin/amazon-ssm-agent -register -y -code {{ ssm_activation_code }} -id {{ ssm_activation_id }} -region {{ aws_region }}"
+  become: yes
+
+- name: ECS Anywhere | Start the SSM agent
+  systemd:
+    name: amazon-ssm-agent.service
+    state: started
+  become: yes
+    
+
+- name: ECS Anywhere | Start the ECS Service
+  systemd:
+    name: ecs.service
+    state: started     
+  become: yes

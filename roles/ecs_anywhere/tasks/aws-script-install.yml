@@ -1,0 +1,27 @@
+---
+- import_tasks: pre-checks.yml
+
+- name: ECS Anywhere | Download ECS Anywhere Install Script
+  get_url: 
+    url: "{{ aws_script_url }}"
+    dest: /tmp
+    mode: '0550'
+  become: yes
+
+- name: ECS Anywhere | Create SSM Activation Code
+  local_action:
+    module: gagglenet.ecs_anywhere.aws_ssm_activation
+    state: create
+    iam_role: "{{ iam_role }}"
+    region: "{{ aws_region }}"
+  register: ssm_activation_info
+
+- set_fact:
+    ssm_activation_id: "{{ ssm_activation_info.ActivationId }}"
+    ssm_activation_code: "{{ ssm_activation_info.ActivationCode }}"
+
+- name: ECS Anywhere | Run ECS Anywhere Install Script and Register SSM Agent
+  shell:
+    '/tmp/ecs-anywhere-install-latest.sh --region "{{ aws_region }}" --cluster "{{ aws_ecs_cluster }}" --activation-id "{{ ssm_activation_id }}" --activation-code "{{ ssm_activation_code }}"'
+  become: yes
+  register: ecs_registration

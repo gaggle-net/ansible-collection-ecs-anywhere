@@ -1,0 +1,10 @@
+---
+- hosts: aws_ecs
+  vars:
+    aws_region: us-west-2
+    aws_ecs_cluster: ecs-anywhere
+    iam_role: ecsAnywhereRole
+  tasks:
+    - include_role:
+        name: gagglenet.ecs_anywhere.ecs_anywhere
+        tasks_from: deregister-ssm-instance

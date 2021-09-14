@@ -1,0 +1,6 @@
+---
+- import_tasks: pre-checks.yml
+
+- import_tasks: deregister-ssm-instance.yml
+    
+- import_tasks: register-ssm-instance.yml

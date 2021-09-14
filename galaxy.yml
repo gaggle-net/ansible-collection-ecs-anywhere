@@ -1,0 +1,14 @@
+namespace: gagglenet
+name: ecs_anywhere
+version: 1.0.0
+readme: README.md
+authors:
+- Sergio Mejia <sergio@gaggle.net>
+description: AWS ECS Anywhere Collection
+license_file: LICENSE
+tags: ['aws','ecs','centos']
+dependencies: {}
+repository: https://github.com/gaggle-net/ansible-collection-ecs-anywhere
+documentation: https://github.com/gaggle-net/ansible-collection-ecs-anywhere
+homepage: https://github.com/gaggle-net/ansible-collection-ecs-anywhere
+issues: https://github.com/gaggle-net/ansible-collection-ecs-anywhere/issues
