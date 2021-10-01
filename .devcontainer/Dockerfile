@@ -1,10 +1,7 @@
 FROM python:3.9-bullseye
 
-# Install node and npm
-# NPM CLI releases https://github.com/npm/cli/releases
-# AWS CDK releases https://github.com/aws/aws-cdk/releases
 RUN apt-get update \
-    && apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common sudo less
+    && apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common sudo less vim
 
 # Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip" \
