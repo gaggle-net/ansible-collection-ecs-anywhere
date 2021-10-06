@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
@@ -9,7 +8,7 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: aws_ssm
-version_added: 1.0.0
+version_added: 1.1.0
 short_description: Perform various System Manager management tasks.
 description:
     - This module allows the user to create SSM activations. 
@@ -77,15 +76,15 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-ActivationId:
+activation_id:
   description: SSM Activation Id
   type: string
   returned: state is create
-ActivationCode: 
+activation_code: 
   description: SSM Activation Code
   type: string
   returned: state is create
-ActivationList:
+activation_list:
   description: List of SSM Activations
   type: list
   returned: state is get
@@ -102,7 +101,7 @@ from ansible_collections.amazon.aws.plugins.module_utils.core import is_boto3_er
 
 def create_ssm_activation(module, client, iam_role, registration_limit):
     if module.check_mode:
-        module.exit_json(msg="CREATE_ACTIVATION operation skipped - running in check mode", changed=True)
+        module.exit_json(msg="CREATE ACTIVATION operation skipped - running in check mode", changed=True)
     try:
         ssm_activation = client.create_activation(
             IamRole=iam_role,
@@ -110,13 +109,13 @@ def create_ssm_activation(module, client, iam_role, registration_limit):
         )
     except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError) as e:
         module.fail_json_aws(e, msg=e)
-    module.exit_json(msg="SSM Activation Created", ActivationId=ssm_activation['ActivationId'],
-                     ActivationCode=ssm_activation['ActivationCode'], changed=True)
+    module.exit_json(msg="SSM Activation Created", activation_id=ssm_activation['ActivationId'],
+                     activation_code=ssm_activation['ActivationCode'], changed=True)
 
 
 def delete_ssm_activation(module, client, activation_id):
     if module.check_mode:
-        module.exit_json(msg="CREATE_ACTIVATION operation skipped - running in check mode", changed=True)
+        module.exit_json(msg="DELETE ACTIVATION operation skipped - running in check mode", changed=True)
     try:
         ssm_output = client.delete_activation(
             ActivationId=activation_id

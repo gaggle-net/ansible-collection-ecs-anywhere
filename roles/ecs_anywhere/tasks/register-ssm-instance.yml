@@ -20,8 +20,8 @@
   register: ssm_activation_info
 
 - set_fact:
-    ssm_activation_id: "{{ ssm_activation_info.ActivationId }}"
-    ssm_activation_code: "{{ ssm_activation_info.ActivationCode }}"
+    ssm_activation_id: "{{ ssm_activation_info.activation_id }}"
+    ssm_activation_code: "{{ ssm_activation_info.activation_code }}"
 
 - name: ECS Anywhere | Set the ECS Cluster Name
   lineinfile:
