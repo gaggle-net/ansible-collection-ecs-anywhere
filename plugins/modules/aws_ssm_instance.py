@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
 
@@ -9,7 +8,7 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: aws_ssm_instance
-version_added: 1.0.0
+version_added: 1.1.0
 short_description: Perform various System Manager instance tasks.
 description:
     - This module allows the user to get SSM instance information or deregister an SSM instance
@@ -67,7 +66,7 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-InstanceInformationList:
+instance_list:
   description: List of instances information
   type: list
   returned: state is get
@@ -104,7 +103,7 @@ def get_ssm_instance_info(module, client):
         module.warn("Could not find activation.")
     except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError) as e:
         module.fail_json_aws(e, msg=e)
-    module.exit_json(msg="SSM Activation List", output=ssm_output['InstanceInformationList'])
+    module.exit_json(msg="SSM Activation List", instance_list=ssm_output['InstanceInformationList'])
 
 
 def deregister_ssm_instance(module, client):

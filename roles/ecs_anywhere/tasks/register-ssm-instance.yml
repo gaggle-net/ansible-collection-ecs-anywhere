@@ -13,15 +13,15 @@
 
 - name: ECS Anywhere | Create SSM Activation Code
   local_action:
-    module: gagglenet.ecs_anywhere.aws_ssm_activation
+    module: gaggle_net.ecs_anywhere.aws_ssm_activation
     state: create
     iam_role: "{{ iam_role }}"
     region: "{{ aws_region }}"
   register: ssm_activation_info
 
 - set_fact:
-    ssm_activation_id: "{{ ssm_activation_info.ActivationId }}"
-    ssm_activation_code: "{{ ssm_activation_info.ActivationCode }}"
+    ssm_activation_id: "{{ ssm_activation_info.activation_id }}"
+    ssm_activation_code: "{{ ssm_activation_info.activation_code }}"
 
 - name: ECS Anywhere | Set the ECS Cluster Name
   lineinfile:

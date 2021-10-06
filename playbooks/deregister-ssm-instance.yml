@@ -6,5 +6,5 @@
     iam_role: ecsAnywhereRole
   tasks:
     - include_role:
-        name: gagglenet.ecs_anywhere.ecs_anywhere
+        name: gaggle_net.ecs_anywhere.ecs_anywhere
         tasks_from: deregister-ssm-instance

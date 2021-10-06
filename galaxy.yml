@@ -1,6 +1,6 @@
-namespace: gagglenet
+namespace: gaggle_net
 name: ecs_anywhere
-version: 0.1.0
+version: 1.1.0
 readme: README.md
 authors:
 - Sergio Mejia <sergio@gaggle.net>

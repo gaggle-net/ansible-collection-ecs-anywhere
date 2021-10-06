@@ -1,4 +1,4 @@
-# Ansible Collection - gagglenet.ecsanywhere
+# Ansible Collection - gaggle_net.ecs_anywhere
 
 ## Role Summary
 
@@ -37,7 +37,7 @@ Install ECS and SSM agents and register SSM node
   tasks:
   - name: Run AWS Install Script
     include_role:
-      name: gagglenet.ecs_anywhere.ecs_anywhere
+      name: gaggle_net.ecs_anywhere.ecs_anywhere
       tasks_from: aws-script-install
     vars:
       iam_role: ecsAnywhereRole

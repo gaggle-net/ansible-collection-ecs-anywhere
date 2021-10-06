@@ -10,7 +10,7 @@
 
 - name: ECS Anywhere | Deregister SSM Instance
   local_action:
-    module: gagglenet.ecs_anywhere.aws_ssm_instance
+    module: gaggle_net.ecs_anywhere.aws_ssm_instance
     state: deregister
     instance_id: "{{ ssm_id }}"
     region: us-west-2
