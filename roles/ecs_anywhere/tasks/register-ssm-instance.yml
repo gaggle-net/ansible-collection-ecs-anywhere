@@ -13,7 +13,7 @@
 
 - name: ECS Anywhere | Create SSM Activation Code
   local_action:
-    module: gagglenet.ecs_anywhere.aws_ssm_activation
+    module: gaggle_net.ecs_anywhere.aws_ssm_activation
     state: create
     iam_role: "{{ iam_role }}"
     region: "{{ aws_region }}"

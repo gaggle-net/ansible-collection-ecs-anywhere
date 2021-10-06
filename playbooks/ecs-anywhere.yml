@@ -2,7 +2,7 @@
 - hosts: aws_ecs
   tasks:
     - import_role:
-        name: gagglenet.ecs_anywhere.ecs_anywhere
+        name: gaggle_net.ecs_anywhere.ecs_anywhere
   become: yes
   vars:
     aws_region: us-west-2
