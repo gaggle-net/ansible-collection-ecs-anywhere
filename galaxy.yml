@@ -1,6 +1,6 @@
 namespace: gaggle_net
 name: ecs_anywhere
-version: 1.1.0
+version: 1.1.1
 readme: README.md
 authors:
 - Sergio Mejia <sergio@gaggle.net>
@@ -12,3 +12,7 @@ repository: https://github.com/gaggle-net/ansible-collection-ecs-anywhere
 documentation: https://github.com/gaggle-net/ansible-collection-ecs-anywhere
 homepage: https://github.com/gaggle-net/ansible-collection-ecs-anywhere
 issues: https://github.com/gaggle-net/ansible-collection-ecs-anywhere/issues
+build_ignore:
+- .devcontainer
+- .github
+- Makefile
