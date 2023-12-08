@@ -14,6 +14,7 @@
     state: create
     iam_role: "{{ iam_role }}"
     region: "{{ aws_region }}"
+  become: "{{ use_sudo_for_local_tasks }}"
   environment:
     AWS_PROFILE: "{{ aws_sso_profile | default(omit) }}"
   register: ssm_activation_info
@@ -27,5 +28,5 @@
     /tmp/ecs-anywhere-install-latest.sh --region "{{ aws_region }}" --cluster "{{ aws_ecs_cluster }}"
     --activation-id "{{ ssm_activation_id }}" --activation-code "{{ ssm_activation_code }}"
     {{ '--docker-install-source none' if (ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8') else '' }}
-  become: yes
+  become: "{{ use_sudo_for_local_tasks }}"
   register: ecs_registration
