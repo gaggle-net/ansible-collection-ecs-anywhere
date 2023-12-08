@@ -28,5 +28,5 @@
     /tmp/ecs-anywhere-install-latest.sh --region "{{ aws_region }}" --cluster "{{ aws_ecs_cluster }}"
     --activation-id "{{ ssm_activation_id }}" --activation-code "{{ ssm_activation_code }}"
     {{ '--docker-install-source none' if (ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8') else '' }}
-  become: "{{ use_sudo_for_local_tasks }}"
+  become: true
   register: ecs_registration
