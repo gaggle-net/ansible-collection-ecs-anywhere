@@ -10,11 +10,11 @@ galaxy_info:
   github_branch: main
   platforms:
     - name: EL
-      versions: 
+      versions:
         - 7
         - 8
     - name: Fedora
-      versions: 
+      versions:
         - 27
         - 28
   galaxy_tags:

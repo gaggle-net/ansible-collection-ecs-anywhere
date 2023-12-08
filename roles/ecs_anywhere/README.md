@@ -19,7 +19,7 @@ This role requires Ansible 2.4 or higher and AWS CLI v2.
 ## Variables
 
 | variable | description | required? | default |
-| -------- | ----------- | ---------- | ------- | 
+| -------- | ----------- | ---------- | ------- |
 | iam_role | Which IAM role to associate with instance | yes | - |
 | aws_ecs_cluster | Name of ECS cluster to use | yes | - |
 | aws_region | Which region to use for this ECS instance | yes | `us-west-2` |
@@ -48,7 +48,7 @@ Install ECS and SSM agents and register SSM node
 
 ## Running the Playbook
 ```bash
-ansible-playbook ecs-anywhere.yml -i hosts 
+ansible-playbook ecs-anywhere.yml -i hosts
 ```
 
 ## License
