@@ -27,6 +27,7 @@ This role requires Ansible 2.4 or higher and AWS CLI v2.
 | aws_script_url | Location of install script | no | `https://amazon-ecs-agent.s3.amazonaws.com/ecs-anywhere-install-latest.sh` |
 | use_sudo_for_local_tasks | Override default sudo behaviour for local tasks | no | true |
 | aws_sso_profile | SSO profile used to run local task | no | omit |
+| include_docker_role | Install docker as a dependnecy | no | when os = rhel8 |
 
 ## Example Playbooks
 
