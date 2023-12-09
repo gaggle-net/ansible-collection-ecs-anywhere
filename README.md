@@ -11,6 +11,7 @@ Supports the following Operating Systems:
 
 -   CentOS 7
 -   CentOS 8
+-   Almalinux 8
 
 ## Requirements
 
@@ -25,7 +26,8 @@ This role requires Ansible 2.4 or higher and AWS CLI v2.
 | aws_region | Which region to use for this ECS instance | yes | `us-west-2` |
 | aws_install_dir | Where to install ECS anywhere | no | `/opt/amazon/ecs-anywhere` |
 | aws_script_url | Location of install script | no | `https://amazon-ecs-agent.s3.amazonaws.com/ecs-anywhere-install-latest.sh` |
-
+| use_sudo_for_local_tasks | Override default sudo behaviour for local tasks | no | true |
+| aws_sso_profile | SSO profile used to run local task | no | omit |
 
 ## Example Playbooks
 
@@ -42,7 +44,7 @@ Install ECS and SSM agents and register SSM node
     vars:
       iam_role: ecsAnywhereRole
       aws_ecs_cluster: ecs-anywhere
-      region: us-west-2
+      aws_region: us-west-2
 
 ```
 
