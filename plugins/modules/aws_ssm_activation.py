@@ -1,8 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
+import botocore
+from ansible_collections.amazon.aws.plugins.module_utils.core import (
+    AnsibleAWSModule, is_boto3_error_code
+)
 
 
 DOCUMENTATION = r'''
@@ -26,8 +29,8 @@ options:
     type: str
   instance_name:
     description:
-      - The name of the registered, managed instance as it will appear in the Amazon Web Services
-        Systems Manager console.
+      - The name of the registered, managed instance as it will appear in the
+        Amazon Web Services Systems Manager console.
     required: false
     type: str
   registration_limit:
@@ -53,26 +56,29 @@ author:
 '''
 
 EXAMPLES = '''
-- hosts: localhost
+- name: Create SSM Activation Example
+  hosts: localhost
   tasks:
-  - name: Create SSM Activation
-    aws_ssm_activation:
-      state: create
-      iam_role: ecsAnywhereRole
-      region: us-west-2
+    - name: Create SSM Activation
+      aws_ssm_activation:
+        state: create
+        ecs_anywhere_iam_role: ecsAnywhereRole
+        region: us-west-2
 
-- hosts: localhost
+- name: Delete SSM Activation Example
+  hosts: localhost
   tasks:
-  - name: Delete SSM Activation
-    aws_ssm_activation:
-      state: delete
-      activation_id: 12345678
+    - name: Delete SSM Activation
+      aws_ssm_activation:
+        state: delete
+        activation_id: 12345678
 
-- hosts: localhost
+- name: Get SSM Activation Example
+  hosts: localhost
   tasks:
-  - name: Get SSM Activation
-    aws_ssm_activation:
-      state: get
+    - name: Get SSM Activation
+      aws_ssm_activation:
+        state: get
 '''
 
 RETURN = '''
@@ -90,99 +96,100 @@ activation_list:
   returned: state is get
 '''
 
-try:
-    import botocore
-except ImportError:
-    pass  # Handled by AnsibleAWSModule
-
-from ansible_collections.amazon.aws.plugins.module_utils.core import AnsibleAWSModule
-from ansible_collections.amazon.aws.plugins.module_utils.core import is_boto3_error_code
-
 
 def create_ssm_activation(module, client, iam_role, registration_limit):
     if module.check_mode:
-        module.exit_json(msg="CREATE ACTIVATION operation skipped - running in check mode", changed=True)
+        module.exit_json(
+            msg="CREATE ACTIVATION operation skipped - running in check mode",
+            changed=True
+        )
+
     try:
         ssm_activation = client.create_activation(
             IamRole=iam_role,
             RegistrationLimit=registration_limit,
         )
-    except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError) as e:
-        module.fail_json_aws(e, msg=e)
-    module.exit_json(msg="SSM Activation Created", activation_id=ssm_activation['ActivationId'],
-                     activation_code=ssm_activation['ActivationCode'], changed=True)
+        module.exit_json(
+            msg="SSM Activation Created",
+            activation_id=ssm_activation['ActivationId'],
+            activation_code=ssm_activation['ActivationCode'],
+            changed=True
+        )
+    except (botocore.exceptions.BotoCoreError,
+            botocore.exceptions.ClientError) as e:
+        module.fail_json_aws(e, msg=str(e))
 
 
 def delete_ssm_activation(module, client, activation_id):
     if module.check_mode:
-        module.exit_json(msg="DELETE ACTIVATION operation skipped - running in check mode", changed=True)
-    try:
-        ssm_output = client.delete_activation(
-            ActivationId=activation_id
+        module.exit_json(
+            msg="DELETE ACTIVATION operation skipped - running in check mode",
+            changed=True
         )
-    except is_boto3_error_code('InvalidActivation') as e:
+
+    try:
+        client.delete_activation(ActivationId=activation_id)
+        module.exit_json(msg="SSM Activation Deleted", changed=True)
+    except is_boto3_error_code('InvalidActivation'):
         module.warn("Could not find activation.")
-    except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError) as e:
-        module.fail_json_aws(e, msg=e)
-    module.exit_json(msg="SSM Activation Deleted", changed=True)
+    except (botocore.exceptions.BotoCoreError,
+            botocore.exceptions.ClientError) as e:
+        module.fail_json_aws(e, msg=str(e))
 
 
 def get_ssm_activation(module, client, activation_id):
     try:
         if activation_id != 'None':
             ssm_output = client.describe_activations(
-                Filters=[
-                    {
-                        'FilterKey': 'ActivationIds',
-                        'FilterValues': [activation_id]
-                    }
-                ]
+                Filters=[{'FilterKey': 'ActivationIds',
+                          'FilterValues': [activation_id]}]
             )
         else:
             ssm_output = client.describe_activations()
-    except is_boto3_error_code('InvalidInstanceId') as e:
+
+        module.exit_json(
+            msg="SSM Activation List",
+            output=ssm_output['ActivationList']
+        )
+    except is_boto3_error_code('InvalidInstanceId'):
         module.warn("Could not find activation.")
-    except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError) as e:
-        module.fail_json_aws(e, msg=e)
-    module.exit_json(msg="SSM Activation List", output=ssm_output['ActivationList'])
+    except (botocore.exceptions.BotoCoreError,
+            botocore.exceptions.ClientError) as e:
+        module.fail_json_aws(e, msg=str(e))
 
 
 def main():
     argument_spec = dict(
         iam_role=dict(type='str'),
         registration_limit=dict(type='int', default=1),
-        state=dict(type='str', required=True, choices=['present', 'absent', 'create', 'delete', 'get'], aliases=['command']),
-        activation_id=dict(type=str, default='None')
+        state=dict(type='str', required=True,
+                   choices=['present', 'absent', 'create', 'delete', 'get'],
+                   aliases=['command']),
+        activation_id=dict(type='str', default='None')
     )
 
     module = AnsibleAWSModule(
         argument_spec=argument_spec,
         supports_check_mode=True,
-        required_if=(
+        required_if=[
             ('state', 'present', ['iam_role']),
             ('state', 'create', ['iam_role']),
             ('state', 'delete', ['activation_id'])
-        ),
+        ]
     )
 
     iam_role = module.params.get('iam_role')
     registration_limit = module.params.get('registration_limit')
     activation_id = module.params.get('activation_id')
 
-    if module.params['state'] in ('present',  'create'):
-        command = 'create'
-    elif module.params['state'] in ('absent', 'delete'):
-        command = 'delete'
-    elif module.params['state'] == 'get':
-        command = 'get'
-
+    state = module.params['state']
     client = module.client('ssm')
 
-    if command == 'create':
+    if state in ('present', 'create'):
         create_ssm_activation(module, client, iam_role, registration_limit)
-    elif command == 'delete':
+    elif state in ('absent', 'delete'):
         delete_ssm_activation(module, client, activation_id)
-    elif command == 'get':
+    elif state == 'get':
         get_ssm_activation(module, client, activation_id)
 
     module.exit_json(failed=False)
@@ -190,4 +197,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

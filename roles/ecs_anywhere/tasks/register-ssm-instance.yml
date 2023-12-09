@@ -15,11 +15,11 @@
   local_action:
     module: gaggle_net.ecs_anywhere.aws_ssm_activation
     state: create
-    iam_role: "{{ iam_role }}"
-    region: "{{ aws_region }}"
-  become: "{{ use_sudo_for_local_tasks }}"
+    iam_role: "{{ ecs_any_where_iam_role }}"
+    region: "{{ ecs_anywhere_aws_region }}"
+  become: "{{ ecs_anywhere_use_sudo_for_local_tasks }}"
   environment:
-    AWS_PROFILE: "{{ aws_sso_profile | default(omit) }}"
+    AWS_PROFILE: "{{ ecs_anywhere_aws_sso_profile | default(omit) }}"
   register: ssm_activation_info
 
 - set_fact:
@@ -31,12 +31,12 @@
     state: present
     path: /etc/ecs/ecs.config
     regexp: '^[# ]*ECS_CLUSTER\s*=\s*'
-    line: "ECS_CLUSTER={{ aws_ecs_cluster }}"
+    line: "ECS_CLUSTER={{ ecs_anywhere_aws_ecs_cluster }}"
   become: true
 
 - name: ECS Anywhere | Register the SSM Agent
   shell:
-    "/usr/bin/amazon-ssm-agent -register -y -code {{ ssm_activation_code }} -id {{ ssm_activation_id }} -region {{ aws_region }}"
+    "/usr/bin/amazon-ssm-agent -register -y -code {{ ssm_activation_code }} -id {{ ssm_activation_id }} -region {{ ecs_anywhere_aws_region }}"
   become: true
 
 - name: ECS Anywhere | Start the SSM agent

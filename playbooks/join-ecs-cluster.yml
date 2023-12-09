@@ -2,9 +2,9 @@
 - name: Join ECS Cluster
   hosts: aws_ecs
   vars:
-    aws_region: us-west-2
-    aws_ecs_cluster: ecs-anywhere
-    iam_role: ecsAnywhereRole
+    ecs_anywhere_aws_region: us-west-2
+    ecs_anywhere_aws_ecs_cluster: ecs-anywhere
+    ecs_anywhere_iam_role: ecsAnywhereRole
   tasks:
     - name: Deregister from SSM Instance
       ansible.builtin.include_role:

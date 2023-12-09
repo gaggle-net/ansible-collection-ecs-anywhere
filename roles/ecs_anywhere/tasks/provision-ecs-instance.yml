@@ -31,6 +31,6 @@
 
 - name: install ssm agent
   dnf:
-    name: https://s3.{{ aws_region }}.amazonaws.com/amazon-ssm-{{ aws_region }}/latest/linux_{{ arch }}/amazon-ssm-agent.rpm
+    name: https://s3.{{ ecs_anywhere_aws_region }}.amazonaws.com/amazon-ssm-{{ ecs_anywhere_aws_region }}/latest/linux_{{ arch }}/amazon-ssm-agent.rpm
     state: present
     

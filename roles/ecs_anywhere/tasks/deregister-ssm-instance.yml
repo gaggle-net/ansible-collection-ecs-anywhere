@@ -14,9 +14,9 @@
     state: deregister
     instance_id: "{{ ssm_id }}"
     region: us-west-2
-  become: "{{ use_sudo_for_local_tasks }}"
+  become: "{{ ecs_anywhere_use_sudo_for_local_tasks }}"
   environment:
-    AWS_PROFILE: "{{ aws_sso_profile | default(omit) }}"
+    AWS_PROFILE: "{{ ecs_anywhere_aws_sso_profile | default(omit) }}"
 
 - name: ECS Anywhere | Delete Local Registration Info
   file:

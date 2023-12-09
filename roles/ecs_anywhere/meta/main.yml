@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: ecs-anywhere
+  role_name: ecs_anywhere
   author: gagglenet
   descpription: Ansible role that configures ecs anywhere instance
   company: Gaggle Net
@@ -24,4 +24,4 @@ galaxy_info:
 
 dependencies:
   - name: geerlingguy.docker
-    when: include_docker_role | default(true)
+    when: ecs_anywhere_include_docker_role | default(true)
