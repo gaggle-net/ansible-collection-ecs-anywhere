@@ -1,0 +1,29 @@
+objects:
+  role: {}
+plugins:
+  become: {}
+  cache: {}
+  callback: {}
+  cliconf: {}
+  connection: {}
+  filter: {}
+  httpapi: {}
+  inventory: {}
+  lookup: {}
+  module:
+    aws_ssm_activation:
+      description: Perform various System Manager management tasks.
+      name: aws_ssm_activation
+      namespace: ''
+      version_added: 1.1.0
+    aws_ssm_instance:
+      description: Perform various System Manager instance tasks.
+      name: aws_ssm_instance
+      namespace: ''
+      version_added: 1.1.0
+  netconf: {}
+  shell: {}
+  strategy: {}
+  test: {}
+  vars: {}
+version: 1.2.0

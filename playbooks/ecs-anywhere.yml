@@ -1,11 +1,12 @@
 ---
-- hosts: aws_ecs
-  tasks:
-    - import_role:
-        name: gaggle_net.ecs_anywhere.ecs_anywhere
-  become: yes
+- name: Set up ECS Anywhere
+  hosts: aws_ecs
+  become: true
   vars:
     aws_region: us-west-2
     aws_ecs_cluster: ecs-anywhere
     iam_role: ecsAnywhereRole
- 
+  tasks:
+    - name: Import ECS Anywhere role
+      ansible.builtin.import_role:
+        name: gaggle_net.ecs_anywhere.ecs_anywhere

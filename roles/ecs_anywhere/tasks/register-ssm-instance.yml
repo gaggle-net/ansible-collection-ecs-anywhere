@@ -3,13 +3,13 @@
   systemd:
     name: ecs.service
     state: stopped
-  become: yes
+  become: true
 
 - name: ECS Anywhere | Delete ECS Agent Data
   file:
     path: /var/lib/ecs/data/agent.db
     state: absent
-  become: yes
+  become: true
 
 - name: ECS Anywhere | Create SSM Activation Code
   local_action:
@@ -17,6 +17,9 @@
     state: create
     iam_role: "{{ iam_role }}"
     region: "{{ aws_region }}"
+  become: "{{ use_sudo_for_local_tasks }}"
+  environment:
+    AWS_PROFILE: "{{ aws_sso_profile | default(omit) }}"
   register: ssm_activation_info
 
 - set_fact:
@@ -29,22 +32,22 @@
     path: /etc/ecs/ecs.config
     regexp: '^[# ]*ECS_CLUSTER\s*=\s*'
     line: "ECS_CLUSTER={{ aws_ecs_cluster }}"
-  become: yes
- 
+  become: true
+
 - name: ECS Anywhere | Register the SSM Agent
   shell:
     "/usr/bin/amazon-ssm-agent -register -y -code {{ ssm_activation_code }} -id {{ ssm_activation_id }} -region {{ aws_region }}"
-  become: yes
+  become: true
 
 - name: ECS Anywhere | Start the SSM agent
   systemd:
     name: amazon-ssm-agent.service
     state: started
-  become: yes
-    
+  become: true
+
 
 - name: ECS Anywhere | Start the ECS Service
   systemd:
     name: ecs.service
-    state: started     
-  become: yes
+    state: started
+  become: true

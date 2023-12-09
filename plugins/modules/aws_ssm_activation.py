@@ -11,31 +11,31 @@ module: aws_ssm
 version_added: 1.1.0
 short_description: Perform various System Manager management tasks.
 description:
-    - This module allows the user to create SSM activations. 
+    - This module allows the user to create SSM activations.
 options:
   state:
-    description
-      - Specifies the state of the ssm activation. 
+    description:
+      - Specifies the state of the ssm activation.
     required: true
     aliases: ['command']
     choices: ['present', 'absent', 'create', 'delete', 'get']
     type: str
   iam_role:
-    description: 
-      - The iam role that will be assigned to the managed instance. 
+    description:
+      - The iam role that will be assigned to the managed instance.
     type: str
   instance_name:
     description:
-      - The name of the registered, managed instance as it will appear in the Amazon Web Services 
-      Systems Manager console.
+      - The name of the registered, managed instance as it will appear in the Amazon Web Services
+        Systems Manager console.
     required: false
     type: str
   registration_limit:
-    description: 
+    description:
       - Maximum number of managed instances to register. Default is 1
     required: false
     type: int
-  instance_id: 
+  instance_id:
     description:
       - The ID of the activation
     required: false
@@ -60,14 +60,14 @@ EXAMPLES = '''
       state: create
       iam_role: ecsAnywhereRole
       region: us-west-2
-    
+
 - hosts: localhost
   tasks:
   - name: Delete SSM Activation
     aws_ssm_activation:
       state: delete
       activation_id: 12345678
-    
+
 - hosts: localhost
   tasks:
   - name: Get SSM Activation
@@ -80,7 +80,7 @@ activation_id:
   description: SSM Activation Id
   type: string
   returned: state is create
-activation_code: 
+activation_code:
   description: SSM Activation Code
   type: string
   returned: state is create

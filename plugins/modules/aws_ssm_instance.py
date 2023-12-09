@@ -14,13 +14,13 @@ description:
     - This module allows the user to get SSM instance information or deregister an SSM instance
 options:
   state:
-    description
-      - Specifies the state of the ssm instance. 
+    description:
+      - Specifies the state of the ssm instance.
     required: true
     aliases: ['command']
     choices: ['deregister', 'get']
     type: str
-  instance_id: 
+  instance_id:
     description:
       - The ID of the SSM instance
     required: false
