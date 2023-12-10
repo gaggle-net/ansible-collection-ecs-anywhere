@@ -12,7 +12,9 @@ Release Summary
 ---------------
 
 - Added options to override default role behaviors for environments not using the VSCode dev container.
-- Introduced conditional dependency on the geerlingguy.docker role for RHEL8 setups, following AWS ECS agent setup guidelines.
+- Optional variable to provide AWS SSO profile for running activation
+- Introduced conditional dependency on the geerlingguy.docker role for EL8 based setups, following AWS ECS agent setup guidelines.
 - Resolved issue reported for fixing syntax error in `tasks/deregister-ssm-instance.yml`.
-- Syntax improvements as identified by ansible-lint for code quality.
+- Syntax improvements as identified by ansible-lint and flake8 for code quality.
+- Added a changelog.
 
