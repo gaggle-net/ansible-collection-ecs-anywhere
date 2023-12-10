@@ -17,14 +17,15 @@ from ansible_collections.amazon.aws.plugins.module_utils.ec2 import (
     AWSRetry, ansible_dict_to_boto3_filter_list
 )
 
+
 DOCUMENTATION = r'''
 ---
 module: aws_ssm_instance
-version_added: 1.1.0
+version_added: "1.1.0"
 short_description: Perform various System Manager instance tasks.
 description:
-    - This module allows the user to get SSM instance information or
-      deregister an SSM instance
+  - This module allows the user to get SSM instance information or
+    deregister an SSM instance.
 options:
   state:
     description:
@@ -35,20 +36,19 @@ options:
     type: str
   instance_id:
     description:
-      - The ID of the SSM instance
+      - The ID of the SSM instance.
     required: false
     type: str
   region:
     description:
-      - AWS Region
+      - AWS Region.
     required: true
     type: str
   filters:
     description:
-      - A dict of filters to apply. Each dict item consists of a filter key
-        and a filter value. See:
-        U(https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html) # noqa: E501
-        For possible filters. Filter names and values are case sensitive.
+      - "A dict of filters to apply. Each dict item consists of a filter key and a filter value. \
+        See U(https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html) for possible filters. \
+        Filter names and values are case sensitive."
     required: false
     default: {}
     type: dict
