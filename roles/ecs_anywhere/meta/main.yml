@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: ecs_anywhere
   author: gagglenet
-  descpription: Ansible role that configures ecs anywhere instance
+  description: Ansible role that configures ecs anywhere instance
   company: Gaggle Net
   issue_tracker_url: https://github.com/gaggle-net/ansible-ecs-anywhere-playbook/issues
   license: MIT
@@ -11,12 +11,11 @@ galaxy_info:
   platforms:
     - name: EL
       versions:
-        - 7
-        - 8
+        - '7'
+        - '8'
     - name: Fedora
       versions:
-        - 27
-        - 28
+        - all
   galaxy_tags:
     - aws
     - centos
