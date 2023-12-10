@@ -1,32 +1,41 @@
 ---
-- import_tasks: pre-checks.yml
+- name: Import pre-checks
+  ansible.builtin.import_tasks: pre-checks.yml
 
 - name: ECS Anywhere | Download ECS Anywhere Install Script
-  get_url:
-    url: "{{ aws_script_url }}"
+  ansible.builtin.get_url:
+    url: "{{ ecs_anywhere_aws_script_url }}"
     dest: /tmp
     mode: '0550'
-  become: yes
+  become: true
 
 - name: ECS Anywhere | Create SSM Activation Code
-  local_action:
-    module: gaggle_net.ecs_anywhere.aws_ssm_activation
-    state: create
-    iam_role: "{{ iam_role }}"
-    region: "{{ aws_region }}"
-  become: "{{ use_sudo_for_local_tasks }}"
+  delegate_to: localhost
+  ansible.builtin.shell:
+    cmd: >
+      gaggle_net.ecs_anywhere.aws_ssm_activation
+      state=create
+      iam_role="{{ ecs_anywhere_iam_role }}"
+      region="{{ ecs_anywhere_aws_region }}"
   environment:
-    AWS_PROFILE: "{{ aws_sso_profile | default(omit) }}"
+    AWS_PROFILE: "{{ ecs_anywhere_aws_sso_profile | default(omit) }}"
   register: ssm_activation_info
+  become: "{{ ecs_anywhere_use_sudo_for_local_tasks }}"
+  changed_when: >-
+    ssm_activation_info.activation_id is defined and
+    ssm_activation_info.activation_code is defined
 
-- set_fact:
+- name: Set SSM Activation Fact
+  ansible.builtin.set_fact:
     ssm_activation_id: "{{ ssm_activation_info.activation_id }}"
     ssm_activation_code: "{{ ssm_activation_info.activation_code }}"
 
 - name: ECS Anywhere | Run ECS Anywhere Install Script and Register SSM Agent
-  shell: >
-    /tmp/ecs-anywhere-install-latest.sh --region "{{ aws_region }}" --cluster "{{ aws_ecs_cluster }}"
-    --activation-id "{{ ssm_activation_id }}" --activation-code "{{ ssm_activation_code }}"
-    {{ '--docker-install-source none' if (ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8') else '' }}
+  ansible.builtin.shell:
+    cmd: >
+      /tmp/ecs-anywhere-install-latest.sh --region "{{ ecs_anywhere_aws_region }}" --cluster "{{ ecs_anywhere_aws_ecs_cluster }}"
+      --activation-id "{{ ssm_activation_id }}" --activation-code "{{ ssm_activation_code }}"
+      {{ '--docker-install-source none' if ecs_anywhere_include_docker_role else '' }}
   become: true
   register: ecs_registration
+  changed_when: ecs_registration.rc == 0

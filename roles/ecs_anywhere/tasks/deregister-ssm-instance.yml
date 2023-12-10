@@ -1,61 +1,63 @@
 ---
 - name: ECS Anywhere | Get SSM Instance Info
-  shell: ssm-cli get-instance-information
+  ansible.builtin.command: ssm-cli get-instance-information
   register: ssm_instance_info
   become: true
+  changed_when: false
 
-- set_fact:
+- name: Set SSM ID Fact
+  ansible.builtin.set_fact:
     ssm_id: "{{ (ssm_instance_info.stdout | from_json) | json_query('\"instance-id\"') }}"
-
+  changed_when: ssm_id is defined
 
 - name: ECS Anywhere | Deregister SSM Instance
-  local_action:
-    module: gaggle_net.ecs_anywhere.aws_ssm_instance
+  gaggle_net.ecs_anywhere.aws_ssm_instance:
     state: deregister
     instance_id: "{{ ssm_id }}"
-    region: us-west-2
-  become: "{{ use_sudo_for_local_tasks }}"
+    region: "{{ ecs_anywhere_aws_region }}"
+  delegate_to: localhost
+  become: "{{ ecs_anywhere_use_sudo_for_local_tasks }}"
   environment:
-    AWS_PROFILE: "{{ aws_sso_profile | default(omit) }}"
+    AWS_PROFILE: "{{ ecs_anywhere_aws_sso_profile | default(omit) }}"
 
 - name: ECS Anywhere | Delete Local Registration Info
-  file:
+  ansible.builtin.file:
     path: /var/lib/amazon/ssm/registration
     state: absent
   become: true
 
 - name: ECS Anywhere | Delete ECS Agent Data
-  file:
+  ansible.builtin.file:
     path: /var/lib/ecs/data/agent.db
     state: absent
   become: true
 
 - name: ECS Anywhere | Stop the SSM Agent Service
-  systemd:
+  ansible.builtin.systemd:
     name: amazon-ssm-agent.service
     state: stopped
   become: true
 
 - name: ECS Anywhere | Stop the ECS Agent Service
-  systemd:
+  ansible.builtin.systemd:
     name: ecs.service
     state: stopped
   become: true
 
 - name: ECS Anywhere | Install python3-docker
-  yum:
+  ansible.builtin.yum:
     name: python3-docker
     state: installed
   become: true
 
 - name: ECS Anywhere | Get List of All Running Docker Containers
-  docker_host_info:
+  community.docker.docker_host_info:
     containers: true
   register: docker_info
   become: true
 
 - name: ECS Anywhere | Remove All Docker Containers
-  docker_container:
+  community.docker.docker_container:
     name: '{{ item.Names[0] | regex_replace("^/", "") }}'
     state: absent
   loop: "{{ docker_info.containers }}"

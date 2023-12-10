@@ -1,7 +1,7 @@
 ---
-aws_region: us-west-2
-aws_install_dir: /opt/amazon/ecs-anywhere
-aws_script_url: https://amazon-ecs-agent.s3.amazonaws.com/ecs-anywhere-install-latest.sh
-use_sudo_for_local_tasks: true
-include_docker_role: "{{ ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8' }}"
+ecs_anywhere_aws_region: us-west-2
+ecs_anywhere_aws_install_dir: /opt/amazon/ecs-anywhere
+ecs_anywhere_aws_script_url: https://amazon-ecs-agent.s3.amazonaws.com/ecs-anywhere-install-latest.sh
+ecs_anywhere_use_sudo_for_local_tasks: true
+ecs_anywhere_include_docker_role: "{{ ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8' }}"
 ...

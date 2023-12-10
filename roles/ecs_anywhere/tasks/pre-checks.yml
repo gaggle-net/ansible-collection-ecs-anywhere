@@ -1,10 +1,10 @@
 ---
 - name: ECS Anywhere | Check If Using cgroups V2
-  stat:
+  ansible.builtin.stat:
     path: /sys/fs/cgroup/cgroup.controllers
   register: cgroup_controllers
- 
+
 - name: ECS Anywhere | Fail If Using cgroups V2
-  fail:
+  ansible.builtin.fail:
     msg: Your system is using cgroups v2, which is not supported by ECS
   when: cgroup_controllers.stat.exists

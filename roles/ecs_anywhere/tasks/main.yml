@@ -1,2 +1,3 @@
 ---
-- import_tasks: aws-script-install.yml
+- name: Import AWS script installation tasks
+  ansible.builtin.import_tasks: aws-script-install.yml

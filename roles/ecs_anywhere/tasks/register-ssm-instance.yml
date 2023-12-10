@@ -1,53 +1,54 @@
 ---
 - name: ECS Anywhere | Stop the ECS Service
-  systemd:
+  ansible.builtin.systemd:
     name: ecs.service
     state: stopped
   become: true
 
 - name: ECS Anywhere | Delete ECS Agent Data
-  file:
+  ansible.builtin.file:
     path: /var/lib/ecs/data/agent.db
     state: absent
   become: true
 
 - name: ECS Anywhere | Create SSM Activation Code
-  local_action:
-    module: gaggle_net.ecs_anywhere.aws_ssm_activation
+  gaggle_net.ecs_anywhere.aws_ssm_activation:
     state: create
-    iam_role: "{{ iam_role }}"
-    region: "{{ aws_region }}"
-  become: "{{ use_sudo_for_local_tasks }}"
+    iam_role: "{{ ecs_any_where_iam_role }}"
+    region: "{{ ecs_anywhere_aws_region }}"
+  delegate_to: localhost
+  become: "{{ ecs_anywhere_use_sudo_for_local_tasks }}"
   environment:
-    AWS_PROFILE: "{{ aws_sso_profile | default(omit) }}"
+    AWS_PROFILE: "{{ ecs_anywhere_aws_sso_profile | default(omit) }}"
   register: ssm_activation_info
 
-- set_fact:
+- name: Set SSM Activation Info
+  ansible.builtin.set_fact:
     ssm_activation_id: "{{ ssm_activation_info.activation_id }}"
     ssm_activation_code: "{{ ssm_activation_info.activation_code }}"
 
 - name: ECS Anywhere | Set the ECS Cluster Name
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     path: /etc/ecs/ecs.config
     regexp: '^[# ]*ECS_CLUSTER\s*=\s*'
-    line: "ECS_CLUSTER={{ aws_ecs_cluster }}"
+    line: "ECS_CLUSTER={{ ecs_anywhere_aws_ecs_cluster }}"
   become: true
 
 - name: ECS Anywhere | Register the SSM Agent
-  shell:
-    "/usr/bin/amazon-ssm-agent -register -y -code {{ ssm_activation_code }} -id {{ ssm_activation_id }} -region {{ aws_region }}"
+  ansible.builtin.command:
+    cmd: "/usr/bin/amazon-ssm-agent -register -y -code {{ ssm_activation_code }} -id {{ ssm_activation_id }} -region {{ ecs_anywhere_aws_region }}"
   become: true
+  changed_when: "ssm_activation_code is defined and ssm_activation_id is defined"
 
-- name: ECS Anywhere | Start the SSM agent
-  systemd:
+- name: ECS Anywhere | Start the SSM Agent
+  ansible.builtin.systemd:
     name: amazon-ssm-agent.service
     state: started
   become: true
 
-
 - name: ECS Anywhere | Start the ECS Service
-  systemd:
+  ansible.builtin.systemd:
     name: ecs.service
     state: started
   become: true
