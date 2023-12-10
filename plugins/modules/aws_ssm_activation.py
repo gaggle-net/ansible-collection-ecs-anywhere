@@ -10,7 +10,7 @@ from ansible_collections.amazon.aws.plugins.module_utils.core import (
 
 DOCUMENTATION = r'''
 ---
-module: aws_ssm
+module: aws_ssm_activation
 version_added: 1.1.0
 short_description: Perform various System Manager management tasks.
 description:
@@ -60,16 +60,16 @@ EXAMPLES = '''
   hosts: localhost
   tasks:
     - name: Create SSM Activation
-      aws_ssm_activation:
+      gaggle_net.ecs_anywhere.aws_ssm_activation:
         state: create
-        ecs_anywhere_iam_role: ecsAnywhereRole
+        iam_role: ecsAnywhereRole
         region: us-west-2
 
 - name: Delete SSM Activation Example
   hosts: localhost
   tasks:
     - name: Delete SSM Activation
-      aws_ssm_activation:
+      gaggle_net.ecs_anywhere.aws_ssm_activation:
         state: delete
         activation_id: 12345678
 
@@ -77,7 +77,7 @@ EXAMPLES = '''
   hosts: localhost
   tasks:
     - name: Get SSM Activation
-      aws_ssm_activation:
+      gaggle_net.ecs_anywhere.aws_ssm_activation:
         state: get
 '''
 

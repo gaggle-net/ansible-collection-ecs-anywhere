@@ -1,36 +1,36 @@
 ---
-- name: check if using cgroup v2
-  stat:
+- name: Check if using cgroup v2
+  ansible.builtin.stat:
     path: /sys/fs/cgroup/cgroup.controllers
   register: cgroupv2
 
-- name: fail if using cgroup v2
-  fail:
-    msg: Your system is using cgroups v2, which is not supported by ECS.
+- name: Fail if using cgroup v2
+  ansible.builtin.fail:
+    msg: "Your system is using cgroups v2, which is not supported by ECS."
   when: cgroupv2.stat.exists
 
-- name: copy aws gpg key
-  copy:
+- name: Copy AWS GPG key
+  ansible.builtin.copy:
     src: aws-ecs-gpg-key
     dest: /tmp/aws-ecs-gpg-key
+    mode: '0644'  # Add a specific file permission to address risky file permissions
 
-- name: import pgp key
-  rpm_key:
+- name: Import PGP key
+  ansible.builtin.rpm_key:
     state: present
     key: /tmp/aws-ecs-gpg-key
-    
-- name: install jq
-  yum:
-    name: jq
-    state: latest
 
-- name: set architecture
-  set_fact:
+- name: Install jq
+  ansible.builtin.yum:
+    name: jq
+    state: present  # Change from 'latest' to 'present'
+
+- name: Set architecture
+  ansible.builtin.set_fact:
     arch: amd64
   when: ansible_facts['architecture'] == 'x86_64'
 
-- name: install ssm agent
-  dnf:
-    name: https://s3.{{ ecs_anywhere_aws_region }}.amazonaws.com/amazon-ssm-{{ ecs_anywhere_aws_region }}/latest/linux_{{ arch }}/amazon-ssm-agent.rpm
+- name: Install SSM agent
+  ansible.builtin.dnf:
+    name: "https://s3.{{ ecs_anywhere_aws_region }}.amazonaws.com/amazon-ssm-{{ ecs_anywhere_aws_region }}/latest/linux_{{ arch }}/amazon-ssm-agent.rpm"
     state: present
-    

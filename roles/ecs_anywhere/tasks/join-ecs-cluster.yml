@@ -1,6 +1,9 @@
 ---
-- import_tasks: pre-checks.yml
+- name: Import pre-checks
+  ansible.builtin.import_tasks: pre-checks.yml
 
-- import_tasks: deregister-ssm-instance.yml
-    
-- import_tasks: register-ssm-instance.yml
+- name: Deregister SSM instance
+  ansible.builtin.import_tasks: deregister-ssm-instance.yml
+
+- name: Register SSM instance
+  ansible.builtin.import_tasks: register-ssm-instance.yml
